@@ -1,0 +1,15 @@
+{
+  "nftMint": "FHaWrQBtnKH7Vi3H25XacdLPawHVDTayQVePRAFsDBdj",
+  "tickLower": -1080,
+  "tickUpper": 960,
+  "startLower": -3600,
+  "startUpper": 0,
+  "priceLower": 0.9,
+  "priceUpper": 1.1,
+  "openTx": "3hbVBiaARCpmq9qgLH7hk97WC9DKiqFcHm4QXbBi1uYJ5eYBEE3YC4MwsLrYJ7dbqW2jtkpDMiWyc6kePiokX3ZZ",
+  "closeTx": "5LKwn7EoByooYqk9sSvoSeM5FWfYSxgmdEjeK1FBNH7xAbMoyghs8n8tV7AT5QDeRCDRSvicerDzc1yeQzpwyb17",
+  "returned": {
+    "TKA_raw": 9151009,
+    "TKB_raw": 455758
+  }
+}

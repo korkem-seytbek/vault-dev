@@ -1,20 +1,10 @@
 {
-  "nftMint": "ALCwUEMZN7BZArhPQM3Pvi9ccdv1WMQopbtrrPwn1MTc",
-  "tickLower": -1080,
-  "tickUpper": 960,
+  "nftMint": "3FptZSMJpGoZLGvUwMRUrmcwhU9KC4xyRmZV51Havx4y",
+  "tickLower": -240,
+  "tickUpper": 1860,
   "startLower": -3600,
   "startUpper": 0,
-  "priceLower": 0.9,
-  "priceUpper": 1.1,
-  "openTx": "26fxcQGjYfJcTzTFMTppMqQ2a5wr1Tz3qdvkAzsWTfkXvxCpRe9Qdzx6fU8xZg7pQErR1B3qpkQwfrFa1zFpc7N2",
-  "fees": {
-    "TKA_raw": 5208,
-    "TKB_raw": 5208
-  },
-  "collectTx": "31DviQmAS4Cq6VKtP8kJzAyXLwBXD1aSj4WhWiFkwY2QoqXzSeCTpRoyQuT4TPeWKPJPipLfkP6sijoroMMGJEvZ",
-  "closeTx": "2vJihVEAApiUvweo6zLfsNZ9bHf5xZwF2QCCmQCVhyDv1BPDC5Fj5orCmREW1i6wRHLbuK7P8CG33JSK3P7TGcuM",
-  "returned": {
-    "TKA_raw": 4976808,
-    "TKB_raw": 4402563
-  }
+  "priceLower": 0.9807566734986681,
+  "priceUpper": 1.1987026009428168,
+  "openTx": "66JYfUCyUx3rPdsButpPsn7rgjSeAXX9Pr28iqDjnZeToCRFXrmZ8JM3CTuiJn6K19cCxFKfuwpvA1pjfbA3wxH2"
 }
