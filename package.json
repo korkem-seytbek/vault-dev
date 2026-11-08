@@ -7,11 +7,13 @@
     "deploy": "anchor deploy --provider.cluster devnet"
   },
   "dependencies": {
-    "@coral-xyz/anchor": "^0.31.1",
-    "bn.js": "^5.2.3"
+    "@coral-xyz/anchor": "^0.32.1",
+    "@raydium-io/raydium-sdk-v2": "^0.2.84-alpha",
+    "bn.js": "^5.2.3",
+    "decimal.js": "^10.6.0"
   },
   "devDependencies": {
-    "@solana/spl-token": "^0.4.9",
+    "@solana/spl-token": "^0.4.15",
     "@solana/web3.js": "^1.95.4",
     "@types/chai": "^4.3.12",
     "@types/mocha": "^10.0.7",
