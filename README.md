@@ -236,3 +236,49 @@ Vault обменивает свои токены через CLMM-пул Raydium 
 - Slippage: разница между ожидаемой ценой и фактической, потому что цена в пуле успевает измениться. Защита: параметр минимальной суммы на выходе, если пул отдаёт меньше, транзакция откатывается.
 - При малой ликвидности около текущей цены обмен быстро проходит текущие тики и уходит в соседние, где цена уже другая, поэтому цена сдвигается сильнее.
 - Обмен подписывает программа, потому что токены принадлежат PDA vault, а подписать за PDA может только программа (invoke_signed). Админ лишь разрешает операцию.
+
+## Неделя 13: позиция в CLMM-пуле
+
+Vault сам становится провайдером ликвидности в пуле TKA/TKB (devnet): открывает позицию в выбранном диапазоне цены, собирает комиссии и закрывает позицию. NFT позиции принадлежит PDA vault. Все действия доступны только admin.
+
+Инструкции программы (programs/simple_vault/src/instructions):
+- open_raydium_position: открыть позицию, admin задаёт тики диапазона и максимум токенов (amount_0_max, amount_1_max).
+- collect_raydium_fees: собрать комиссии (decrease_liquidity_v2 с нулевой ликвидностью, NFT и позиция остаются).
+- close_raydium_position: вывести всю ликвидность и сжечь NFT, с минимумами получаемых токенов (amount_0_min, amount_1_min).
+
+Скрипт: scripts/lp.ts (команды open, swaps, collect, close, push, down, status). Обмены для комиссий делаются с другого кошелька (trader).
+
+### Цикл 1: открыть, обмены, собрать комиссии, закрыть
+- Диапазон: цена 0.90-1.10 (тики -1080..960, tickSpacing 60), цена пула при открытии 1.0009.
+- Внесено в позицию: 5 TKA и 4.379387 TKB.
+- 6 обменов по 200 токенов с другого кошелька (по 3 в каждую сторону), цена оставалась в диапазоне (1.0004-1.0184).
+- Комиссии собраны: 0.005208 TKA и 0.005208 TKB.
+- При закрытии вернулось: 4.976808 TKA и 4.402563 TKB (комиссии уже собраны отдельно).
+- Итог для vault: TKA 90 -> 89.982016, TKB 9.970623 -> 9.999007. Выигрыш около 0.0104 токена, это ровно две суммы комиссий: цена почти не изменилась, потерь от смещения цены нет.
+
+Ссылки: открытие https://explorer.solana.com/tx/26fxcQGjYfJcTzTFMTppMqQ2a5wr1Tz3qdvkAzsWTfkXvxCpRe9Qdzx6fU8xZg7pQErR1B3qpkQwfrFa1zFpc7N2?cluster=devnet
+обмены:
+- https://explorer.solana.com/tx/5FeVuaPHiC1oM68sgFN1g1hKnf2PYwkaSJSGdvAnwD8ae3GHD5RyKVRhxNaSLDKSr4jcmmqSoGPSBK7dA9hXzD1Q?cluster=devnet
+- https://explorer.solana.com/tx/y2dywP6SVRsxZGtnMnehWkdvd6Lgu1BRKYrbXDAG4YMK8cjVtVftoE97PPEUgZizTAdCG8ZGXFz4UprSLnPKqWb?cluster=devnet
+- https://explorer.solana.com/tx/3Ce1TDKe6Mk4Uush8M3jz2DrpRf8BqUWxUMXmrix37zv4J1tDfAcxvaBh9NVbA23DzbFieAdcLJmiQRUc3u7SzKh?cluster=devnet
+- https://explorer.solana.com/tx/7isz3fwvkfi5GbtM3B5rkzQxLo6kpeAvhg2CHnHPUezSWRw81dpLHXJsYDpnHSZ6j2QTZVQ81guSYHy2w6zKjH2?cluster=devnet
+- https://explorer.solana.com/tx/2Njhty9w4ZTF5NQwhLzZJ2tmoe2SE9uC8MML4yx2qR8mZcTJafjZ9569EgcmvhWtCRZEcRSAU4ojXRptTArV99Jv?cluster=devnet
+- https://explorer.solana.com/tx/4WBTUSiKmj68EwsHz4uPP9um45WhoyeAiM49NahfmzTABJEN9PuXgjhEsMfNsn7hPjFEYNjBL5TQfH4g9Vq7v6f9?cluster=devnet
+сбор комиссий https://explorer.solana.com/tx/31DviQmAS4Cq6VKtP8kJzAyXLwBXD1aSj4WhWiFkwY2QoqXzSeCTpRoyQuT4TPeWKPJPipLfkP6sijoroMMGJEvZ?cluster=devnet
+закрытие https://explorer.solana.com/tx/2vJihVEAApiUvweo6zLfsNZ9bHf5xZwF2QCCmQCVhyDv1BPDC5Fj5orCmREW1i6wRHLbuK7P8CG33JSK3P7TGcuM?cluster=devnet
+
+### Цикл 2: ребалансировка
+1. Открыта позиция в узком диапазоне 0.95-1.05 (тики -540..540) при цене 0.9925: внесено 5 TKA и 6.643579 TKB. Открытие: https://explorer.solana.com/tx/3igBydVnNXTbW9Pa8gX7JwL8SFKY3JumsEnbnnqFSYN28FwXCGAong9Gc3MW8kM8QEpmSTDRP2ZZJWjU1HU7BqLe?cluster=devnet
+2. Два обмена по 500 TKA с другого кошелька подняли цену до 1.0813, выше верхней границы 1.05. Позиция вышла из диапазона и перестала зарабатывать комиссии.
+3. Позиция закрыта вне диапазона: вернулось 11.814081 TKA и 0 TKB (все токены стали TKA), комиссии за время в диапазоне 0.014315 TKA. Закрытие: https://explorer.solana.com/tx/5pauRQY8Ue4yfyzH9zXZLvzzkNG1iWMoveE6r5maLAoedMTwtkb4RRD4xENZTf49QwA9h1cuZqoYEkvz888vxSc8?cluster=devnet
+4. Открыта новая позиция вокруг новой цены 1.0813: диапазон 0.9731-1.1894 (тики -300..1740), внесено 5 TKA и 4.112231 TKB. Открытие: https://explorer.solana.com/tx/4MJq1nhBA5nBYNV3UTKepzB2wQad7F5guyv99wQH6w8bX7mUwB5US8VAoXo1FX9xWpiFCCAXidPEPnfFS3YMN5Vs?cluster=devnet
+
+Цена ребалансировки: если бы токены просто лежали, 5 TKA + 6.643579 TKB стоили бы при цене 1.0813 около 12.18 TKA, а позиция вернула 11.81 TKA вместе с комиссиями, то есть на 0.37 TKA (около 3%) меньше. Пока цена росла, позиция продавала TKB дешевле рынка, комиссии этого не покрыли.
+
+### Вопросы для самопроверки
+- Почему соотношение токенов зависит от цены внутри диапазона? Позиция работает как автоматический обмен в пределах диапазона: когда цена растёт, она продаёт токен 0 (TKB) и накапливает токен 1 (TKA), когда падает, наоборот. Ниже нижней границы в позиции только токен 0, выше верхней только токен 1, внутри пропорция плавно меняется. В цикле 2 при цене 0.9925 позиция взяла 5 TKA и 6.64 TKB, а после роста цены осталась только TKA.
+- Что будет, если цена выше верхней границы? Позиция целиком конвертируется в токен 1 (у нас TKA), вся ликвидность остаётся вне обменов, комиссии больше не растут. NFT позиции остаётся у vault, пока admin её не закроет или не передвинет.
+- Зачем ребалансировка и кто её делает? Чтобы деньги снова работали: позиция вне диапазона не приносит комиссий. Admin закрывает старую позицию и открывает новую вокруг текущей цены. Это стоит денег: комиссии за транзакции и потеря относительно простого хранения токенов, как в цикле 2. В настоящих продуктах это делает автоматический бот.
+
+### Упрощения учебной версии
+Пока средства в позиции, пользователи не могут их вывести. Поле total_tokens в состоянии vault не обновляется после swap и открытия позиции, поэтому цена share не отражает комиссии и токены, лежащие в позиции. Для полноценного продукта стоимость vault надо считать по обоим токенам и позиции.

@@ -352,7 +352,19 @@ async function push() {
   }
 }
 
-const cmds: any = { open: openPosition, status, swaps, collect, close: closePosition, push };
+async function down() {
+  const c = await setup();
+  const trader = await ensureTrader(c);
+  const target = Number(process.env.TARGET ?? 1.01);
+  for (let i = 0; i < 12; i++) {
+    const price = Number((await readPool(c.connection)).price);
+    console.log(`цена ${price}, цель <= ${target}`);
+    if (price <= target) return;
+    await traderSwap(c.connection, trader, TOKEN_B, 500_000_000); // TKB -> TKA: цена падает
+  }
+}
+
+const cmds: any = { open: openPosition, status, swaps, collect, close: closePosition, push, down };
 const cmd = process.argv[2];
 (cmds[cmd] ? cmds[cmd]() : Promise.reject(new Error("команды: " + Object.keys(cmds).join(" | "))))
   .catch((e) => { console.error(e); process.exit(1); });

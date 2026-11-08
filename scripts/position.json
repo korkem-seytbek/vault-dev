@@ -1,10 +1,10 @@
 {
-  "nftMint": "3FptZSMJpGoZLGvUwMRUrmcwhU9KC4xyRmZV51Havx4y",
-  "tickLower": -240,
-  "tickUpper": 1860,
+  "nftMint": "9pY2Fwv95gGC79NmGk21oZ9mbGJWHYrbDokaCGh56QJH",
+  "tickLower": -300,
+  "tickUpper": 1740,
   "startLower": -3600,
   "startUpper": 0,
-  "priceLower": 0.9807566734986681,
-  "priceUpper": 1.1987026009428168,
-  "openTx": "66JYfUCyUx3rPdsButpPsn7rgjSeAXX9Pr28iqDjnZeToCRFXrmZ8JM3CTuiJn6K19cCxFKfuwpvA1pjfbA3wxH2"
+  "priceLower": 0.9731352121744791,
+  "priceUpper": 1.1893874815465857,
+  "openTx": "4MJq1nhBA5nBYNV3UTKepzB2wQad7F5guyv99wQH6w8bX7mUwB5US8VAoXo1FX9xWpiFCCAXidPEPnfFS3YMN5Vs"
 }
