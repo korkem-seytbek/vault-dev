@@ -74,6 +74,11 @@ pub struct CloseRaydiumPosition<'info> {
     )]
     pub personal_position: Box<Account<'info, PersonalPositionState>>,
 
+    /// Protocol position: PDA Raydium (пул + диапазон тиков)
+    /// CHECK: создаётся и валидируется Raydium
+    #[account(mut)]
+    pub protocol_position: UncheckedAccount<'info>,
+
     /// Vault пула для token0
     #[account(mut)]
     pub token_vault_0: InterfaceAccount<'info, TokenAccount>,
@@ -141,7 +146,7 @@ pub fn handler<'a, 'b, 'c: 'info, 'info>(
             nft_account: ctx.accounts.position_nft_account.to_account_info(),
             personal_position: ctx.accounts.personal_position.to_account_info(),
             pool_state: ctx.accounts.pool_state.to_account_info(),
-            protocol_position: ctx.accounts.personal_position.to_account_info(),
+            protocol_position: ctx.accounts.protocol_position.to_account_info(),
             token_vault_0: ctx.accounts.token_vault_0.to_account_info(),
             token_vault_1: ctx.accounts.token_vault_1.to_account_info(),
             tick_array_lower: ctx.accounts.tick_array_lower.to_account_info(),

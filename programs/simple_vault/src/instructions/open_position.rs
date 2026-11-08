@@ -72,6 +72,11 @@ pub struct OpenRaydiumPosition<'info> {
     #[account(mut)]
     pub personal_position: UncheckedAccount<'info>,
 
+    /// Protocol position: PDA Raydium (пул + диапазон тиков)
+    /// CHECK: создаётся и валидируется Raydium
+    #[account(mut)]
+    pub protocol_position: UncheckedAccount<'info>,
+
     /// Tick array нижней границы
     /// CHECK: валидируется Raydium
     #[account(mut)]
@@ -190,7 +195,7 @@ pub fn handler<'a, 'b, 'c: 'info, 'info>(
         position_nft_mint: ctx.accounts.position_nft_mint.to_account_info(),
         position_nft_account: ctx.accounts.position_nft_account.to_account_info(),
         pool_state: ctx.accounts.pool_state.to_account_info(),
-        protocol_position: ctx.accounts.personal_position.to_account_info(),
+        protocol_position: ctx.accounts.protocol_position.to_account_info(),
         tick_array_lower: ctx.accounts.tick_array_lower.to_account_info(),
         tick_array_upper: ctx.accounts.tick_array_upper.to_account_info(),
         personal_position: ctx.accounts.personal_position.to_account_info(),

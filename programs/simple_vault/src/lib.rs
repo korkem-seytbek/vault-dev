@@ -14,6 +14,13 @@ declare_id!("EpM7JMw19rcwizaARbUgrL2Z6cvv6EMTh9KqJk2iWsEe");
 pub mod simple_vault {
     use super::*;
 
+    /// Собрать комиссии позиции (только admin).
+    pub fn collect_raydium_fees<'a, 'b, 'c: 'info, 'info>(
+        ctx: Context<'a, 'b, 'c, 'info, CloseRaydiumPosition<'info>>,
+    ) -> Result<()> {
+        instructions::collect_fees::collect_handler(ctx)
+    }
+
     /// Обмен токенов vault через Raydium CLMM (только admin, подписывает vault PDA).
     pub fn swap_via_raydium<'a, 'b, 'c: 'info, 'info>(
         ctx: Context<'a, 'b, 'c, 'info, SwapViaRaydium<'info>>,
